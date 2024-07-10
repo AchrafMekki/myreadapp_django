@@ -1,7 +1,15 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField  # postgresql specific
+from apps.core.models import CreatedModifiedAbstract
 
 # Create your models here.
+
+class BookManager(models.Manager):
+    # self = Book.objects
+    def get_books_by_tags(self, *tags):
+        return self.filter(tags__name__in=tags)
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=50, blank=True)
     
@@ -29,8 +37,11 @@ class BookAuthor(models.Model):
 
     def __str__(self) -> str:
         return f"{self.author}{self.role}{self.book}"
+    
+    class Meta:
+        verbose_name_plural = 'Books and Authors'
 
-class Book(models.Model):
+class Book(CreatedModifiedAbstract):
     BOOK_CATEGORY = {
         "pr": "programming",
         "ar": "art",
@@ -48,11 +59,29 @@ class Book(models.Model):
     published_date = models.IntegerField()
     publisher = models.CharField(max_length=50)
     # authors = ArrayField(ArrayField(models.CharField(max_length=50)))
-    authors = models.ManyToManyField('book.Author', related_name='book', through='book.BookAuthor')
-    tags = models.ManyToManyField('book.Tag', related_name='book')
+    authors = models.ManyToManyField('book.Author', through='book.BookAuthor')
+    tags = models.ManyToManyField('book.Tag')
     lang = models.CharField(max_length=50)
     edition = models.SmallIntegerField(null=True, blank=True)
     book_format = models.CharField(max_length=2, choices=BOOK_FORMAT, default='eb')
 
+    # Override objects with new Manager
+    objects = BookManager()
+
+    # @classmethod
+    # def get_books_by_tags(cls, *tags):
+    #     return cls.objects.filter(tags__name__in=tags)
+
+    @property
+    def short_des(self):
+        return f'{self.description[:30]}...'
+
     def __str__(self) -> str:
         return f"{self.title}({self.published_date})"
+    
+
+    class Meta:
+        ordering = ('title',)
+        # <app>_<model>
+        default_related_name = '%(app_label)s_%(model_name)s'
+        
