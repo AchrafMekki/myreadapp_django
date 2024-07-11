@@ -78,10 +78,9 @@ class Book(CreatedModifiedAbstract):
 
     def __str__(self) -> str:
         return f"{self.title}({self.published_date})"
-    
 
+  
     class Meta:
         ordering = ('title',)
         # <app>_<model>
         default_related_name = '%(app_label)s_%(model_name)s'
-        
