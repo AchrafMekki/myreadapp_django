@@ -1,0 +1,24 @@
+{% load custom_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+  <h1>{{book.title}}</h1>
+
+  <p><b>isbn</b>: {{book.isbn}}</p>
+  <p><b>description</b>: {{book.description}}</p>
+  <p><b>Published Year</b>: {{book.page_count}}</p>
+  <p><b>Publisher</b>:{{book.publisher}}</p>
+  <p><b>Authors</b>: {{authors| join_with_comma | semi_colon_seperator}}</p>
+  <p><b>Language</b>: {{book.lang}}</p>
+  <p><b>Edition</b>: {{book.edition}}</p>
+  <p><b>Format</b>: {{book.book_format}}</p>
+  <p><b>Tags:</b>: {{tags| join_with_comma | semi_colon_seperator}}</p>
+  
+</body>
+</html>
